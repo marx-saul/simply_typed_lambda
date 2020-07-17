@@ -1,0 +1,9 @@
+{
+	"authors": [
+		"marx-saul"
+	],
+	"copyright": "Copyright © 2020, marx-saul",
+	"description": "A type checker for the simply typed lambda calculus.",
+	"license": "Boost Software License 1.0",
+	"name": "simply_typed_lambda"
+}

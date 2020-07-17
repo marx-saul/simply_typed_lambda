@@ -1,0 +1,15 @@
+.dub
+docs.json
+__dummy.html
+docs/
+/simply_typed_lambda
+simply_typed_lambda.so
+simply_typed_lambda.dylib
+simply_typed_lambda.dll
+simply_typed_lambda.a
+simply_typed_lambda.lib
+simply_typed_lambda-test-*
+*.exe
+*.o
+*.obj
+*.lst
