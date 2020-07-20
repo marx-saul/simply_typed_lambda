@@ -12,4 +12,9 @@
 \f:int->int->int.\x:int.\y:int.f x y
 
 Well typed: ((int -> (int -> int)) -> (int -> (int -> int)))
+
+
+(\f:int->int.true) (\x:int.0)
+
+Well typed: bool
 </code>
