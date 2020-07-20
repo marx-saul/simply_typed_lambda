@@ -30,6 +30,9 @@ final class TypeChecker : Visitor {
 		if (!exp.ret_expr) { error("Ill typed expression."); }
 		exp.ret_expr.accept(this);
 		exp.type = new FunctionType(exp.arg_type, exp.ret_expr.type);
+
+		// get rid of the id
+		id_set.remove(exp.arg);
 	}
 	
 	override void visit(ApplyExpression exp) {
@@ -51,7 +54,11 @@ final class TypeChecker : Visitor {
 		if (exp.left.type is null) { error("Ill typed expression."); return; }
 		auto f_type = cast(FunctionType) exp.left.type;
 		if (f_type.ran is null) { error("Ill typed expression."); return; }
-		if (!check_type_equality(f_type.ran, exp.right.type)) { error("Ill typed expression. (ill function application)"); return; }
+		if (!check_type_equality(f_type.ran, exp.right.type)) {
+			error("Ill typed expression. (ill function application  ", type_to_string(exp.left.type), " and ", type_to_string(exp.right.type), ")");
+			//writeln(type_to_string(f_type.ran));
+			return;
+		}
 		exp.type = f_type.dom;
 	}
 	
@@ -118,10 +125,10 @@ final class TypeEqualityChecker : Visitor {
 	override void visit(LambdaExpression) 		{ assert(0); }
 	override void visit(ApplyExpression)	 	{ assert(0); }
 	override void visit(IfElseExpression) 		{ assert(0); }
-	override void visit(IdentifierExpression) 	{ assert(0); }
+	override void visit(IdentifierExpression) { assert(0); }
 	override void visit(TrueExpression) 		{ assert(0); }
 	override void visit(FalseExpression) 		{ assert(0); }
-	override void visit(IntegerExpression) 		{ assert(0); }
+	override void visit(IntegerExpression) 	{ assert(0); }
 	override void visit(Type) 					{ assert(0); }
 	
 	override void visit(FunctionType type) {
@@ -132,16 +139,20 @@ final class TypeEqualityChecker : Visitor {
 		
 		// check if ranges are equal
 		equal_to = (cast(FunctionType) equal_to).ran;
-		if (type) { equal = false; return; }
+		if (!equal_to) { equal = false; return; }
+		if (!type) { equal = false; return; }
 		type.ran.accept(this);
 		if (!equal) { return; }
+		
 		equal_to = tmp;
 		
 		// check if domains are equal
 		equal_to = (cast(FunctionType) equal_to).dom;
-		if (type) { equal = false; return; }
+		if (!equal_to) { equal = false; return; }
+		if (!type) { equal = false; return; }
 		type.dom.accept(this);
 		if (!equal) { return; }
+		
 		equal_to = tmp;
 	}
 	override void visit(PrimitiveType type) {
